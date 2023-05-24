@@ -6,6 +6,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { LexoRank } from "lexorank";
+import { useSession } from "next-auth/react";
 
 interface ModalProps {
   closeModal: () => void;
@@ -29,6 +30,7 @@ export default function Modal({
   addTodo,
   lastTodoRank,
 }: ModalProps) {
+  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
@@ -39,6 +41,7 @@ export default function Modal({
   } = useForm<Todo>();
   const onSubmit: SubmitHandler<Todo> = (data): void => {
     if (isEdit && todo) {
+      //Edit todo
       const newTodo = {
         ...data,
         id: todo.id,
@@ -51,7 +54,11 @@ export default function Modal({
     } else {
       //rank: LexoRank.parse(lastTodoRank).genNext().toString()
       const newTodo = {
+        //New todo
         ...data,
+        isDone: false,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+        userId: session?.user.id!,
         rank: LexoRank.parse(lastTodoRank).genNext().toString(),
       };
       addTodo(newTodo);
@@ -124,7 +131,7 @@ export default function Modal({
                       <div className="flex">
                         <div className="w-1/4">Title</div>
                         <input
-                          className="bg-lightPurple w-1/2 rounded-md p-1 text-white"
+                          className="w-1/2 rounded-md bg-lightPurple p-1 text-white"
                           {...register("title", { required: true })}
                           id="title"
                         />
@@ -143,7 +150,7 @@ export default function Modal({
                                 showTimeSelect
                                 minDate={new Date()}
                                 timeIntervals={30}
-                                className="bg-lightPurple rounded-md p-1 text-white"
+                                className="rounded-md bg-lightPurple p-1 text-white"
                                 timeFormat="HH:mm"
                                 timeCaption="time"
                                 onChange={(date) => {
@@ -160,7 +167,7 @@ export default function Modal({
                       <select
                         {...register("catId")}
                         id="catId"
-                        className="bg-lightPurple rounded-md p-1 text-white"
+                        className="rounded-md bg-lightPurple p-1 text-white"
                       >
                         {categories.map((cat) => (
                           <option key={cat.id} value={cat.id}>
@@ -170,7 +177,7 @@ export default function Modal({
                       </select>
                       {/* <input {...register("", { required: true })} /> */}
                       {/* errors will return when field validation fails  */}
-                      <button className="bg-lightPurple mt-10 rounded-lg p-2 text-2xl text-white outline-none">
+                      <button className="mt-10 rounded-lg bg-lightPurple p-2 text-2xl text-white outline-none">
                         Save
                       </button>
                     </div>

@@ -12,7 +12,7 @@ const User = ({ image, name }: UserProps) => {
         className="min-w-[40px] self-start"
         onClick={() => void signOut({ callbackUrl: "/" })}
       >
-        {image && (
+        {image ? (
           <Image
             src={image}
             width={40}
@@ -20,6 +20,8 @@ const User = ({ image, name }: UserProps) => {
             className="rounded-full"
             alt="me"
           />
+        ) : (
+          <div className="h-10 w-10 rounded-full bg-slate-400 opacity-40" />
         )}
       </button>
       <div className="flex w-full flex-col justify-start">

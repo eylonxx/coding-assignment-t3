@@ -1,19 +1,30 @@
 import { Category } from "@prisma/client";
 import React from "react";
 interface CategoryProps {
-  category: Category;
+  id?: string;
+  color?: string;
+  name?: string;
+  filterTodos: (id: string) => void;
 }
-const CategoryCard = ({ category }: CategoryProps) => {
+const CategoryCard = ({
+  id = "all",
+  color = "gray",
+  name = "all",
+  filterTodos,
+}: CategoryProps) => {
   return (
     <div
-      key={category.id}
+      onClick={() => {
+        filterTodos(id);
+      }}
+      key={id}
       className="flex w-full items-center gap-1 truncate text-sm xs:gap-3 xs:text-lg"
     >
       <div
-        style={{ backgroundColor: category.color }}
+        style={{ backgroundColor: color }}
         className="min-h-[24px] min-w-[24px] rounded-full"
       />
-      <p className="truncate uppercase">{category.name}</p>
+      <p className="truncate uppercase">{name}</p>
     </div>
   );
 };

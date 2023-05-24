@@ -3,7 +3,6 @@ import Head from "next/head";
 import { signIn, useSession } from "next-auth/react";
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
-import LogoLight from "../assets/logo-light.svg";
 
 const Main: NextPage = () => {
   return (
