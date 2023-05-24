@@ -256,7 +256,7 @@ const Home: React.FC = () => {
       ) : null}
       <div className="box-border flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
         <div className="box-border flex h-[90%] w-full min-w-[390px] max-w-[960px] xs:h-2/3 xs:w-2/3 xs:rounded-2xl xs:border-8 xs:border-white">
-          <div className="flex w-[24%] flex-col bg-white p-2 pl-[1px]">
+          <div className="flex w-[24%] flex-col overflow-y-auto bg-white p-2 pl-[1px]">
             <User
               image={sessionData?.user?.image as string}
               name={sessionData?.user?.name}

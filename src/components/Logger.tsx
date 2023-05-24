@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import type { Log } from "~/hooks/useLogger";
 
 interface LoggerProps {
   logs: Log[];
 }
 const Logger = ({ logs }: LoggerProps) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [logs.length]);
+
   return (
     <>
       <div className="font-bold uppercase tracking-wider text-white">
         Logger
       </div>
-      <div className="logger-scrollbar mx-auto flex h-[80%] w-full flex-col items-center gap-1 overflow-y-scroll">
+      <div
+        className="logger-scrollbar mx-auto flex h-[80%] w-full flex-col items-center gap-1 overflow-y-scroll"
+        ref={scrollRef}
+      >
         {logs.map((log, i) => (
           <div
             key={i}
