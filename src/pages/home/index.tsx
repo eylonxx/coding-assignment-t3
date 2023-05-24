@@ -69,6 +69,18 @@ const Home: React.FC = () => {
         );
         return [...updatedCategories];
       });
+      setTodos(() => {
+        const newTodos = todos.filter(
+          (todo) => todo.catId !== deletedCategory.id
+        );
+        return [...newTodos];
+      });
+      setFilteredTodos(() => {
+        const newTodos = todos.filter(
+          (todo) => todo.catId !== deletedCategory.id
+        );
+        return [...newTodos];
+      });
       newLog({
         log: `deleted "${deletedCategory.name}" category and it's todos`,
         type: "create",
