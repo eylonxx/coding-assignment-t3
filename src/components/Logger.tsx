@@ -10,7 +10,7 @@ const Logger = ({ logs }: LoggerProps) => {
       <div className="font-bold uppercase tracking-wider text-white">
         Logger
       </div>
-      <div className="mx-auto flex h-[80%] w-full flex-col items-center gap-1 overflow-y-auto">
+      <div className="logger-scrollbar mx-auto flex h-[80%] w-full flex-col items-center gap-1 overflow-y-scroll">
         {logs.map((log, i) => (
           <div
             key={i}
