@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 * {
-  font-family: "Rubik", sans-serif;
-}
-* {
   scrollbar-width: thin;
   scrollbar-color: var(--secondary) var(--primary);
 }

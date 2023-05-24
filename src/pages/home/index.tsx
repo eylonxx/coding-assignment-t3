@@ -260,16 +260,18 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="box-border flex w-[76%] min-w-[280px] max-w-[720px] flex-col bg-lightPurple xs:rounded-lg">
-            <div className="flex flex-col">
+            <div className="flex min-h-[10%] w-full flex-col gap-1 p-2">
               <Header />
-              <button
-                className=""
-                onClick={() => {
-                  handleEditModal(false);
-                }}
-              >
-                add todo
-              </button>
+              <div className="mx-auto w-11/12">
+                <button
+                  className="box-border w-1/6 min-w-[70px] rounded-xl border-4 border-white bg-lightPurple py-2 text-sm font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-white hover:text-lightPurple"
+                  onClick={() => {
+                    handleEditModal(false);
+                  }}
+                >
+                  new todo
+                </button>
+              </div>
             </div>
 
             <div className="overflow-y-auto">

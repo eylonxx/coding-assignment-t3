@@ -44,7 +44,7 @@ const NewCategoryCard = ({ handleAddCategory }: NewCategoryCardProps) => {
               </span>
             )}
           </div>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex items-center justify-center gap-2">
             <div className="flex h-6 w-6 items-start justify-start overflow-hidden rounded-full">
               <input
                 type="color"
@@ -53,7 +53,7 @@ const NewCategoryCard = ({ handleAddCategory }: NewCategoryCardProps) => {
               />
             </div>
             <button
-              className="flex items-center justify-center rounded-md bg-lightPurple p-1 text-xs font-semibold uppercase tracking-wider text-white transition-all hover:bg-lightPurple/70"
+              className="rounded-mdbox-border border-lightpurple box-border flex items-center justify-center rounded-xl border-[3px] border-lightPurple bg-white p-1 text-sm font-bold uppercase tracking-wider text-lightPurple shadow-sm transition-all hover:bg-lightPurple hover:text-white"
               type="submit"
             >
               Add <FiPlusCircle size={16} />
