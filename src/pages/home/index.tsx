@@ -14,6 +14,7 @@ import type { Category, Todo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import CategoriesList from "~/components/CategoriesList";
 import CategoryCard from "~/components/CategoryCard";
 import Header from "~/components/Header";
 import Modal from "~/components/NewAndEditModal";
@@ -33,6 +34,24 @@ const Home: React.FC = () => {
   const [isEditModal, setIsEditModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo>();
 
+  //CATEGORIES
+  const {
+    data: fetchedCategories,
+    isLoading: isLoadingCategories,
+    refetch: refetchCategories,
+  } = api.category.getAll.useQuery(undefined, {
+    enabled: sessionData?.user !== undefined,
+    onSuccess: (data: Category[]) => setCategories(data),
+  });
+
+  const addCategory = api.category.addCategory.useMutation({
+    onSuccess: (newCategory: Category) => {
+      setCategories([...categories, newCategory]);
+    },
+  });
+  //**CATEGORIES */
+
+  //TODOS
   const {
     data: fetchedTodos,
     isLoading: isLoadingTodos,
@@ -45,23 +64,24 @@ const Home: React.FC = () => {
     },
   });
 
-  const {
-    data: fetchedCategories,
-    isLoading: isLoadingCategories,
-    refetch: refetchCategories,
-  } = api.category.getAll.useQuery(undefined, {
-    enabled: sessionData?.user !== undefined,
-    onSuccess: (data: Category[]) => setCategories(data),
-  });
-
+  //MUTATIONS
   const addTodo = api.todo.addTodo.useMutation({
     onSuccess: (newTodo: Todo) => {
+      setTodos(() => [...todos, newTodo]);
       setFilteredTodos(() => [...todos, newTodo]);
     },
   });
 
   const updateTodo = api.todo.updateTodo.useMutation({
     onSuccess: (updatedTodo: Todo) => {
+      setTodos(() => {
+        const todoToUpdateIndex = todos
+          .map((todo) => todo.id)
+          .indexOf(updatedTodo.id);
+        const newTodos = [...todos];
+        newTodos[todoToUpdateIndex] = updatedTodo;
+        return newTodos;
+      });
       setFilteredTodos(() => {
         const todoToUpdateIndex = todos
           .map((todo) => todo.id)
@@ -74,6 +94,14 @@ const Home: React.FC = () => {
   });
   const toggleTodo = api.todo.toggleTodo.useMutation({
     onSuccess: (updatedTodo: Todo) => {
+      setTodos(() => {
+        const todoToUpdateIndex = todos
+          .map((todo) => todo.id)
+          .indexOf(updatedTodo.id);
+        const newTodos = [...todos];
+        newTodos[todoToUpdateIndex].isDone = updatedTodo.isDone;
+        return newTodos;
+      });
       setFilteredTodos(() => {
         const todoToUpdateIndex = todos
           .map((todo) => todo.id)
@@ -85,19 +113,22 @@ const Home: React.FC = () => {
     },
   });
   const updateRanks = api.todo.updateRanks.useMutation({});
-  const addCategory = api.category.addCategory.useMutation({
-    onSuccess: (newCategory: Category) => {
-      setCategories([...categories, newCategory]);
-    },
-  });
+
   const deleteTodo = api.todo.deleteTodo.useMutation({
     onSuccess: (deletedTodo: Todo) => {
+      setTodos(() => {
+        setFilteredTodos(() => {
+          todos.filter((todo) => todo.id !== deletedTodo.id);
+          return [...todos];
+        });
+      });
       setFilteredTodos(() => {
         todos.filter((todo) => todo.id !== deletedTodo.id);
         return [...todos];
       });
     },
   });
+  //**MUTATIONS */
 
   const handleEditTodo = (todo: Todo) => {
     updateTodo.mutate(todo);
@@ -140,6 +171,7 @@ const Home: React.FC = () => {
     });
   };
 
+  // DND
   const handleDragOver = (e: DragOverEvent) => {
     const { active, over } = e;
     const overId = over?.id;
@@ -172,7 +204,9 @@ const Home: React.FC = () => {
       setActiveTodo(activeTodo);
     }
   }
+  //DND */
 
+  // MODAL
   const handleCloseModal = () => {
     setIsOpen(false);
     setIsEditModal(false);
@@ -190,6 +224,12 @@ const Home: React.FC = () => {
     setIsOpen(true);
   };
 
+  const getLastTodoRank = () => {
+    return todos.sort((a, b) => a.rank.localeCompare(b.rank))[todos.length - 1]
+      .rank;
+  };
+  // MODAL */
+
   return (
     <>
       {todos.length ? (
@@ -202,10 +242,7 @@ const Home: React.FC = () => {
           todo={selectedTodo}
           editTodo={handleEditTodo}
           addTodo={handleAddTodo}
-          lastTodoRank={
-            todos.sort((a, b) => a.rank.localeCompare(b.rank))[todos.length - 1]
-              .rank
-          }
+          lastTodoRank={getLastTodoRank()}
         />
       ) : null}
       <div className="box-border flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
@@ -216,27 +253,12 @@ const Home: React.FC = () => {
               name={sessionData?.user?.name}
             />
             <div className="mx-auto my-3 h-[2px] w-5/6 bg-lightPurple" />
-            <div className="flex flex-col items-start justify-center gap-2">
-              <CategoryCard filterTodos={filterTodos} />
-              {categories.length ? (
-                categories.map((category) => {
-                  return (
-                    <CategoryCard
-                      key={category.id}
-                      id={category.id}
-                      color={category.color}
-                      name={category.name}
-                      filterTodos={filterTodos}
-                    />
-                  );
-                })
-              ) : (
-                <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
-                  <Spinner />
-                </div>
-              )}
-
-              <NewCategoryCard handleAddCategory={handleAddCategory} />
+            <div className="flex h-full flex-col items-start justify-start gap-2">
+              <CategoriesList
+                categories={categories}
+                filterTodos={filterTodos}
+                addCategory={handleAddCategory}
+              />
             </div>
           </div>
           <div className="box-border flex w-[76%] min-w-[280px] max-w-[720px] flex-col bg-lightPurple xs:rounded-lg">
