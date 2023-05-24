@@ -7,8 +7,11 @@ interface UserProps {
 }
 const User = ({ image, name }: UserProps) => {
   return (
-    <div className="mb-2 flex items-center gap-2">
-      <button onClick={() => void signOut({ callbackUrl: "/" })}>
+    <div className="mb-2 flex flex-col items-center gap-2 lg:flex-row">
+      <button
+        className="min-w-[40px] self-start"
+        onClick={() => void signOut({ callbackUrl: "/" })}
+      >
         {image && (
           <Image
             src={image}
@@ -19,9 +22,9 @@ const User = ({ image, name }: UserProps) => {
           />
         )}
       </button>
-      <div className="flex flex-col">
-        <div className="text-xl">Welcome,</div>
-        <div className="text-lg text-lightPurple md:text-xl">{name}</div>
+      <div className="flex w-full flex-col justify-start">
+        <div className="text-xl xl:text-2xl">Welcome,</div>
+        <div className="text-lg text-lightPurple md:text-2xl">{name}</div>
       </div>
     </div>
   );

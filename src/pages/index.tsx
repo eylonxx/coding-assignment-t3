@@ -41,23 +41,37 @@ const AuthShowcase: React.FC = () => {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-4 bg-darkPurple">
-      <div className="flex h-2/5 w-1/3 flex-col rounded-xl bg-white py-10 uppercase shadow-xl">
-        <div className="mb-10 flex w-full items-center justify-center text-xl font-semibold text-lightPurple">
-          Coding Assignment by Eylon
+      <div className="flex h-2/5 w-1/3 flex-col justify-between rounded-xl bg-white px-2 py-10 uppercase shadow-2xl">
+        <div className="flex flex-col">
+          <div className="mb-10 flex w-full items-center justify-center text-center text-xl font-semibold text-lightPurple lg:text-3xl">
+            Coding Assignment by Eylon
+          </div>
+          <div className="mx-auto font-semibold text-lightPurple">
+            A fullstack todolist application
+          </div>
         </div>
-        <div className="mx-auto text-lightPurple">
-          A fullstack todolist application
+        <div className="flex flex-col gap-2">
+          <button
+            className="mx-auto mt-auto w-[80%] rounded-full bg-lightPurple px-10 py-3 text-lg font-semibold uppercase text-white no-underline transition hover:bg-lightPurple/80"
+            onClick={() => {
+              void signIn("google", {
+                callbackUrl: "/home",
+              });
+            }}
+          >
+            Login using google
+          </button>
+          {/* <button
+            className="mx-auto mt-auto w-[80%] rounded-full bg-lightPurple px-10 py-3 text-lg font-semibold uppercase text-white no-underline transition hover:bg-lightPurple/80"
+            onClick={() => {
+              void signIn("discord", {
+                callbackUrl: "/home",
+              });
+            }}
+          >
+            Login using discord
+          </button> */}
         </div>
-        <button
-          className="mx-auto mt-auto w-[80%] rounded-full bg-lightPurple px-10 py-3 text-lg font-semibold uppercase text-white no-underline transition hover:bg-lightPurple/80"
-          onClick={() => {
-            void signIn("google", {
-              callbackUrl: "/home",
-            });
-          }}
-        >
-          Login using google
-        </button>
       </div>
     </div>
   );

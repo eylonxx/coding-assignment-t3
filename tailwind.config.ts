@@ -16,6 +16,7 @@ export default {
       },
       screens: {
         xs: "475px",
+        errorInput: "1160px",
       },
     },
   },

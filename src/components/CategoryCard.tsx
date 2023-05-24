@@ -1,13 +1,19 @@
-import { Category } from '@prisma/client';
-import React from 'react';
+import { Category } from "@prisma/client";
+import React from "react";
 interface CategoryProps {
   category: Category;
 }
 const CategoryCard = ({ category }: CategoryProps) => {
   return (
-    <div key={category.id} className="flex items-center gap-3">
-      <div style={{ backgroundColor: category.color }} className="w-6 h-6 rounded-full" />
-      <p className="uppercase">{category.name}</p>
+    <div
+      key={category.id}
+      className="flex w-full items-center gap-1 truncate text-sm xs:gap-3 xs:text-lg"
+    >
+      <div
+        style={{ backgroundColor: category.color }}
+        className="min-h-[24px] min-w-[24px] rounded-full"
+      />
+      <p className="truncate uppercase">{category.name}</p>
     </div>
   );
 };

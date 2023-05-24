@@ -167,14 +167,14 @@ const Home: React.FC = () => {
           }
         />
       )}
-      <div className="flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
-        <div className="flex h-full w-full min-w-[395px] max-w-[960px] rounded-2xl border-8 border-white xs:h-2/3 xs:w-2/3">
-          <div className="flex w-[27.5%] flex-col bg-white p-2">
+      <div className="box-border flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
+        <div className="box-border flex h-full w-full min-w-[390px] max-w-[960px] xs:h-2/3 xs:w-2/3 xs:rounded-2xl xs:border-8 xs:border-white">
+          <div className="flex w-[24%] flex-col bg-white p-2 pl-[1px]">
             <User
               image={sessionData?.user?.image as string}
               name={sessionData?.user?.name}
             />
-            <div className="mx-auto h-[2px] w-5/6 bg-lightPurple" />
+            <div className="mx-auto my-3 h-[2px] w-5/6 bg-lightPurple" />
             <div className="flex flex-col items-start justify-center gap-2">
               {categories.map((category) => {
                 return <CategoryCard key={category.id} category={category} />;
@@ -183,7 +183,7 @@ const Home: React.FC = () => {
               <NewCategoryCard handleAddCategory={handleAddCategory} />
             </div>
           </div>
-          <div className="flex w-[72.5%] min-w-[295px] max-w-[720px] flex-col rounded-lg bg-lightPurple">
+          <div className="box-border flex w-[76%] min-w-[280px] max-w-[720px] flex-col bg-lightPurple xs:rounded-lg">
             <div className="flex flex-col">
               <Header />
               <button
