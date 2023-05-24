@@ -28,7 +28,7 @@ const AuthShowcase: React.FC = () => {
     if (process.env.NODE_ENV === "development") {
       await router.push("http://localhost:3000/home");
     } else {
-      await router.push("https://eylon-kanban.vercel.app/home");
+      await router.push("https://coding-assignment-t3.vercel.app/home");
     }
   }, []);
 

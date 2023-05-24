@@ -12,7 +12,8 @@ import {
 import type { Category, Todo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 import CategoriesList from "~/components/CategoriesList";
 import Header from "~/components/Header";
 import Logger from "~/components/Logger";
@@ -29,10 +30,11 @@ const Home: React.FC = () => {
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [activeTodo, setActiveTodo] = useState<Todo>();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModal, setIsEditModal] = useState(false);
   const [selectedTodoToEdit, setSelectedTodoToEdit] = useState<Todo>();
   const [selectedCategoryId, setSelectedCategoryId] = useState("all");
+  const router = useRouter();
   const { logs, newLog } = useLogger();
 
   //CATEGORIES
@@ -40,6 +42,7 @@ const Home: React.FC = () => {
     data: fetchedCategories,
     isLoading: isLoadingCategories,
     refetch: refetchCategories,
+    isError: isCategoriesError,
   } = api.category.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Category[]) => setCategories(data),
@@ -54,13 +57,14 @@ const Home: React.FC = () => {
       });
     },
   });
-  //**CATEGORIES */
+  //CATEGORIES */
 
   //TODOS
   const {
     data: fetchedTodos,
     isLoading: isLoadingTodos,
     refetch: refetchTodos,
+    isError: isTodosError,
   } = api.todo.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Todo[]) => {
@@ -125,6 +129,7 @@ const Home: React.FC = () => {
       });
     },
   });
+
   const updateRanks = api.todo.updateRanks.useMutation({
     onSuccess: () => {
       newLog({ log: `Changed todos order`, type: "update" });
@@ -144,7 +149,7 @@ const Home: React.FC = () => {
       newLog({ log: `Deleted "${deletedTodo.title}"`, type: "delete" });
     },
   });
-  //**MUTATIONS */
+  //MUTATIONS */
 
   const handleEditTodo = (todo: Todo) => {
     updateTodo.mutate(todo);
@@ -181,6 +186,7 @@ const Home: React.FC = () => {
     });
     setSelectedCategoryId(catId);
   };
+  //TODOS */
 
   // DND
   const handleDragOver = (e: DragOverEvent) => {
@@ -219,12 +225,8 @@ const Home: React.FC = () => {
 
   // MODAL
   const handleCloseModal = () => {
-    setIsOpen(false);
+    setIsModalOpen(false);
     setIsEditModal(false);
-  };
-
-  const handleOpenModal = () => {
-    setIsOpen(true);
   };
 
   const handleEditModal = (edit: boolean, todo?: Todo) => {
@@ -232,7 +234,7 @@ const Home: React.FC = () => {
       setSelectedTodoToEdit(todo);
     }
     setIsEditModal(edit);
-    setIsOpen(true);
+    setIsModalOpen(true);
   };
 
   const getLastTodoRank = () => {
@@ -240,6 +242,18 @@ const Home: React.FC = () => {
       .rank;
   };
   // MODAL */
+
+  // ERROR HANDLING
+  const handleError = useCallback(async () => {
+    await router.push("https://coding-assignment-t3.vercel.app/error");
+  }, []);
+
+  useEffect(() => {
+    if (isCategoriesError || isTodosError) {
+      void handleError();
+    }
+  }, [isCategoriesError, isTodosError]);
+  // ERROR HANDLING */
 
   return (
     <>
@@ -250,7 +264,7 @@ const Home: React.FC = () => {
           isUpdateSuccess={updateTodo.isSuccess}
           isAddSuccess={addTodo.isSuccess}
           categories={categories}
-          isOpen={isOpen}
+          isOpen={isModalOpen}
           closeModal={handleCloseModal}
           isEdit={isEditModal}
           todo={selectedTodoToEdit}
