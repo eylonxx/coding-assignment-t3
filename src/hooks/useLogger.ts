@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-interface Log {
+export interface Log {
   type: string;
   log: string;
   date: Date;
