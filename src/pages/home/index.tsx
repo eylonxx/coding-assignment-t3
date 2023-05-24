@@ -117,10 +117,8 @@ const Home: React.FC = () => {
   const deleteTodo = api.todo.deleteTodo.useMutation({
     onSuccess: (deletedTodo: Todo) => {
       setTodos(() => {
-        setFilteredTodos(() => {
-          todos.filter((todo) => todo.id !== deletedTodo.id);
-          return [...todos];
-        });
+        todos.filter((todo) => todo.id !== deletedTodo.id);
+        return [...todos];
       });
       setFilteredTodos(() => {
         todos.filter((todo) => todo.id !== deletedTodo.id);
