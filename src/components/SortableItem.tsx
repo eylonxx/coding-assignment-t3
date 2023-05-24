@@ -1,12 +1,13 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Todo } from "@prisma/client";
+import { Category, Todo } from "@prisma/client";
 import React from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import Checkmark from "./Checkmark";
 interface SortableItemProps {
   todo: Todo;
+  categories?: Category[];
   deleteTodo?: (todoId: string) => void;
   completeTodo?: (todoId: string, isDone: boolean) => void;
   editTodo?: (edit: boolean, todo?: Todo) => void;
@@ -17,6 +18,7 @@ const SortableItem = ({
   deleteTodo,
   completeTodo,
   editTodo,
+  categories,
 }: SortableItemProps) => {
   const {
     attributes,
@@ -34,6 +36,13 @@ const SortableItem = ({
     transition,
   };
 
+  // const getCategoryColor = (catId: string) => {
+  //   if(categories)
+  //   const category = categories?.filter((cat) => cat.id === catId);
+  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  //   return category[0]!.color;
+  // };
+
   return (
     <div
       ref={setNodeRef}
@@ -47,8 +56,15 @@ const SortableItem = ({
           </div>
         </div>
         <div className="flex w-full items-center justify-between">
-          <div className="text-lightGray flex w-5/6 flex-col justify-between md:flex-row">
-            <p className="truncate text-lg font-medium">{todo.title}</p>
+          <div className="flex w-5/6 flex-col justify-between text-lightGray md:flex-row">
+            <div className="flex items-center gap-2">
+              <div
+                style={{ backgroundColor: "red" }}
+                className="h-4 w-4 rounded-full"
+              />
+              <p className="truncate text-lg font-medium">{todo.title}</p>
+              <p className="text-red-500">{todo.catId}</p>
+            </div>
             <p className="truncate text-base">
               {new Date(todo.scheduledDate).toLocaleTimeString()}
             </p>
@@ -75,7 +91,7 @@ const SortableItem = ({
                 completeTodo?.(todo.id, !todo.isDone);
               }}
             >
-              <Checkmark isActive={todo.isDone} color="green" />
+              <Checkmark isDone={todo.isDone} />
             </button>
           </div>
         </div>

@@ -19,12 +19,14 @@ import Header from "~/components/Header";
 import Modal from "~/components/NewAndEditModal";
 import NewCategoryCard from "~/components/NewCategoryCard";
 import SortableItem from "~/components/SortableItem";
+import Spinner from "~/components/Spinner";
 import User from "~/components/User";
 import { api } from "~/utils/api";
 
 const Home: React.FC = () => {
   const { data: sessionData } = useSession({ required: true });
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [activeTodo, setActiveTodo] = useState<Todo>();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +39,10 @@ const Home: React.FC = () => {
     refetch: refetchTodos,
   } = api.todo.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
-    onSuccess: (data: Todo[]) => setTodos(data),
+    onSuccess: (data: Todo[]) => {
+      setTodos(data);
+      setFilteredTodos(data);
+    },
   });
 
   const {
@@ -49,10 +54,15 @@ const Home: React.FC = () => {
     onSuccess: (data: Category[]) => setCategories(data),
   });
 
-  const addTodo = api.todo.addTodo.useMutation({});
+  const addTodo = api.todo.addTodo.useMutation({
+    onSuccess: (newTodo: Todo) => {
+      setFilteredTodos(() => [...todos, newTodo]);
+    },
+  });
+
   const updateTodo = api.todo.updateTodo.useMutation({
     onSuccess: (updatedTodo: Todo) => {
-      setTodos((todos) => {
+      setFilteredTodos(() => {
         const todoToUpdateIndex = todos
           .map((todo) => todo.id)
           .indexOf(updatedTodo.id);
@@ -62,7 +72,18 @@ const Home: React.FC = () => {
       });
     },
   });
-  const toggleTodo = api.todo.toggleTodo.useMutation({});
+  const toggleTodo = api.todo.toggleTodo.useMutation({
+    onSuccess: (updatedTodo: Todo) => {
+      setFilteredTodos(() => {
+        const todoToUpdateIndex = todos
+          .map((todo) => todo.id)
+          .indexOf(updatedTodo.id);
+        const newTodos = [...todos];
+        newTodos[todoToUpdateIndex].isDone = updatedTodo.isDone;
+        return newTodos;
+      });
+    },
+  });
   const updateRanks = api.todo.updateRanks.useMutation({});
   const addCategory = api.category.addCategory.useMutation({
     onSuccess: (newCategory: Category) => {
@@ -70,8 +91,11 @@ const Home: React.FC = () => {
     },
   });
   const deleteTodo = api.todo.deleteTodo.useMutation({
-    onSuccess: () => {
-      void refetchTodos();
+    onSuccess: (deletedTodo: Todo) => {
+      setFilteredTodos(() => {
+        todos.filter((todo) => todo.id !== deletedTodo.id);
+        return [...todos];
+      });
     },
   });
 
@@ -99,26 +123,43 @@ const Home: React.FC = () => {
     updateRanks.mutate([...todos]);
   };
 
+  const filterTodos = (catId: string) => {
+    setFilteredTodos(() => {
+      if (catId === "all") {
+        return [...todos];
+      } else {
+        const todoCopy = [...todos].filter((todo) => {
+          console.log(todo.catId, catId);
+
+          return todo.catId === catId;
+        });
+        console.log(todoCopy);
+
+        return [...todoCopy];
+      }
+    });
+  };
+
   const handleDragOver = (e: DragOverEvent) => {
     const { active, over } = e;
     const overId = over?.id;
     if (overId == null) return;
 
     if (active.id !== overId) {
-      const activeTodoIndex = todos
+      const activeTodoIndex = filteredTodos
         .map((todo) => todo.id)
         .indexOf(active.id as string);
-      const overTodoIndex = todos
+      const overTodoIndex = filteredTodos
         .map((todo) => todo.id)
         .indexOf(overId as string);
-      const overTodo = todos[overTodoIndex];
-      const activeTodoRank = todos[activeTodoIndex].rank;
+      const overTodo = filteredTodos[overTodoIndex];
+      const activeTodoRank = filteredTodos[activeTodoIndex].rank;
 
-      setTodos((todos) => {
+      setFilteredTodos(() => {
         const newRank = overTodo.rank;
-        todos[activeTodoIndex].rank = newRank;
-        todos[overTodoIndex].rank = activeTodoRank;
-        return [...todos];
+        filteredTodos[activeTodoIndex].rank = newRank;
+        filteredTodos[overTodoIndex].rank = activeTodoRank;
+        return [...filteredTodos];
       });
     }
   };
@@ -151,7 +192,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {todos.length && (
+      {todos.length ? (
         <Modal
           categories={categories}
           isOpen={isOpen}
@@ -166,7 +207,7 @@ const Home: React.FC = () => {
               .rank
           }
         />
-      )}
+      ) : null}
       <div className="box-border flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
         <div className="box-border flex h-full w-full min-w-[390px] max-w-[960px] xs:h-2/3 xs:w-2/3 xs:rounded-2xl xs:border-8 xs:border-white">
           <div className="flex w-[24%] flex-col bg-white p-2 pl-[1px]">
@@ -176,9 +217,24 @@ const Home: React.FC = () => {
             />
             <div className="mx-auto my-3 h-[2px] w-5/6 bg-lightPurple" />
             <div className="flex flex-col items-start justify-center gap-2">
-              {categories.map((category) => {
-                return <CategoryCard key={category.id} category={category} />;
-              })}
+              <CategoryCard filterTodos={filterTodos} />
+              {categories.length ? (
+                categories.map((category) => {
+                  return (
+                    <CategoryCard
+                      key={category.id}
+                      id={category.id}
+                      color={category.color}
+                      name={category.name}
+                      filterTodos={filterTodos}
+                    />
+                  );
+                })
+              ) : (
+                <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
+                  <Spinner />
+                </div>
+              )}
 
               <NewCategoryCard handleAddCategory={handleAddCategory} />
             </div>
@@ -205,13 +261,13 @@ const Home: React.FC = () => {
                   onDragEnd={handleDragEnd}
                 >
                   <SortableContext
-                    items={todos}
+                    items={filteredTodos}
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="w-full py-4">
                       <div className="mx-auto flex w-11/12 flex-col gap-2 ">
                         <AnimatePresence initial={false}>
-                          {todos
+                          {filteredTodos
                             .sort((a, b) => a.rank.localeCompare(b.rank))
                             .map((todo) => {
                               return (
@@ -226,6 +282,7 @@ const Home: React.FC = () => {
                                   <div className="py-0.5">
                                     <SortableItem
                                       todo={todo}
+                                      categories={categories}
                                       deleteTodo={handleDeleteTodo}
                                       completeTodo={handleCompleteTodo}
                                       editTodo={handleEditModal}
@@ -243,7 +300,9 @@ const Home: React.FC = () => {
                   </DragOverlay>
                 </DndContext>
               ) : (
-                <div>spinner</div>
+                <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
+                  <Spinner />
+                </div>
               )}
             </div>
           </div>
