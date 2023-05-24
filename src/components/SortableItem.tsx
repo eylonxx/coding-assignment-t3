@@ -58,36 +58,41 @@ const SortableItem = ({
             <RxDragHandleDots2 size={24} />
           </div>
         </div>
-        <div className="flex w-full items-center justify-between">
-          <div className="flex w-5/6 flex-col justify-between text-lightGray md:flex-row">
-            <div className="flex items-center gap-2">
+        <div className="flex w-[90%] items-center justify-between">
+          <div className="flex w-2/3 flex-col justify-between text-lightGray sm:w-5/6 lg:flex-row">
+            <div className="flex w-full items-center gap-2">
               <div
                 style={{ backgroundColor: getCategoryColor(todo.catId) }}
-                className="h-6 w-6 rounded-full border-2 border-lightGray"
+                className="min-h-[24px] min-w-[24px] rounded-full border-2 border-lightGray"
               />
-              <p className="truncate text-lg font-medium">{todo.title}</p>
+              <p className="w-full truncate text-lg font-medium md:w-4/5">
+                {todo.title}
+              </p>
             </div>
-            <p className="truncate text-base">
+            <p className="w-full truncate text-left lg:w-2/3 lg:text-right">
               {new Date(todo.scheduledDate).toLocaleTimeString()}
             </p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                deleteTodo?.(todo.id);
-              }}
-              className="z-10 rounded-md bg-[#eee] p-2"
-            >
-              <FiTrash2 />
-            </button>
-            <button
-              onClick={() => {
-                editTodo?.(true, todo);
-              }}
-              className="rounded-md bg-[#eee] p-2"
-            >
-              <FiEdit2 />
-            </button>
+          <div className="flex w-1/2 items-center justify-end gap-2 md:w-[10%]">
+            <div className="flex flex-col md:flex-row">
+              <button
+                onClick={() => {
+                  deleteTodo?.(todo.id);
+                }}
+                className="flex min-h-[25px] min-w-[25px] items-center justify-center rounded-full bg-[#eee]"
+              >
+                <FiTrash2 color="#A18AFF" />
+              </button>
+              <button
+                onClick={() => {
+                  editTodo?.(true, todo);
+                }}
+                className="flex min-h-[25px] min-w-[25px] items-center justify-center rounded-full bg-[#eee]"
+              >
+                <FiEdit2 color="#A18AFF" />
+              </button>
+            </div>
+
             <button
               onClick={() => {
                 completeTodo?.(todo.id, !todo.isDone);

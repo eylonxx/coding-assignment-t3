@@ -12,6 +12,7 @@ import {
 import type { Category, Todo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import CategoriesList from "~/components/CategoriesList";
@@ -302,7 +303,7 @@ const Home: React.FC = () => {
               image={sessionData?.user?.image as string}
               name={sessionData?.user?.name}
             />
-            <div className="mx-auto my-3 h-[2px] w-5/6 bg-lightPurple" />
+            <div className="mx-auto my-3 h-[2px] w-[5/6] bg-lightPurple" />
             <div className="flex h-full flex-col items-start justify-start gap-2">
               <CategoriesList
                 deleteCategory={handleDeleteCategory}
@@ -344,7 +345,7 @@ const Home: React.FC = () => {
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="w-full">
-                      <div className="mx-auto flex w-11/12 flex-col gap-2 ">
+                      <div className="mx-auto flex w-[95%] flex-col gap-2 ">
                         <AnimatePresence initial={false}>
                           {filteredTodos
                             .sort((a, b) => a.rank.localeCompare(b.rank))
