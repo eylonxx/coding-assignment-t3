@@ -74,7 +74,7 @@ const SortableItem = ({
             </p>
           </div>
           <div className="flex w-1/2 items-center justify-end gap-2 md:w-[10%]">
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col gap-1 md:flex-row md:gap-2">
               <button
                 onClick={() => {
                   deleteTodo?.(todo.id);

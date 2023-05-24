@@ -5,7 +5,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 export const categoryRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.category.findMany({
-      where: { id: ctx.session.user.id },
+      where: { userId: ctx.session.user.id },
     });
   }),
   addCategory: protectedProcedure

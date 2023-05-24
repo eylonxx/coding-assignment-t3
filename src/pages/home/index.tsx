@@ -11,8 +11,8 @@ import {
 } from "@dnd-kit/sortable";
 import type { Category, Todo } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { LexoRank } from "lexorank";
 import { useSession } from "next-auth/react";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import CategoriesList from "~/components/CategoriesList";
@@ -83,6 +83,7 @@ const Home: React.FC = () => {
     isLoading: isLoadingTodos,
     refetch: refetchTodos,
     isError: isTodosError,
+    isSuccess: isSuccessFetchingTodos,
   } = api.todo.getAll.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
     onSuccess: (data: Todo[]) => {
@@ -261,8 +262,13 @@ const Home: React.FC = () => {
   };
 
   const getLastTodoRank = () => {
-    return todos.sort((a, b) => a.rank.localeCompare(b.rank))[todos.length - 1]
-      .rank;
+    if (todos.length) {
+      return todos.sort((a, b) => a.rank.localeCompare(b.rank))[
+        todos.length - 1
+      ].rank;
+    } else {
+      return LexoRank.middle().toString();
+    }
   };
   // MODAL */
 
@@ -280,7 +286,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {todos.length ? (
+      {isSuccessFetchingTodos ? (
         <Modal
           isLoadingUpdate={updateTodo.isLoading}
           isLoadingAdd={addTodo.isLoading}
@@ -319,7 +325,8 @@ const Home: React.FC = () => {
             <div className="flex min-h-[10%] w-full justify-between  gap-1 p-2">
               <Header />
               <button
-                className=" box-border flex min-w-[70px] items-center justify-center rounded-xl border-4 border-white bg-lightPurple p-2  text-sm font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-white hover:text-lightPurple"
+                className=" disabled:hover: box-border flex min-w-[70px] items-center justify-center rounded-xl border-4 border-white bg-lightPurple p-2 text-sm font-bold uppercase tracking-wider text-white shadow-sm transition-all enabled:hover:bg-white enabled:hover:text-lightPurple disabled:opacity-40"
+                disabled={categories.length ? false : true}
                 onClick={() => {
                   handleEditModal(false);
                 }}

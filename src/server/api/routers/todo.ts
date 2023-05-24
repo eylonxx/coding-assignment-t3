@@ -5,7 +5,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 export const todoRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.todo.findMany({
-      where: { id: ctx.session.user.id },
+      where: { userId: ctx.session.user.id },
     });
   }),
   addTodo: protectedProcedure

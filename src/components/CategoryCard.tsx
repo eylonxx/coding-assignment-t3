@@ -23,7 +23,7 @@ const CategoryCard = ({
         filterTodos(id);
       }}
       key={id}
-      className={`xs:text-md group relative flex w-full cursor-pointer items-center gap-1 truncate rounded-xl p-1 text-sm font-semibold tracking-wider transition-all hover:bg-darkPurple/70 xs:gap-3 ${
+      className={`xs:text-md group relative flex w-full cursor-pointer items-center gap-1 truncate rounded-xl p-1 py-2 text-sm font-semibold tracking-wider transition-all hover:bg-darkPurple/70 xs:gap-3 ${
         isSelected ? "bg-[#6f4bff]" : "bg-lightPurple"
       }`}
     >
