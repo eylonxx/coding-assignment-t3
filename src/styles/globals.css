@@ -8,11 +8,11 @@
 }
 
 /* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
+.custom-scrollbar::-webkit-scrollbar {
   width: 20px;
 }
 
-*::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track {
   background: #d9d9d9;
   width: 20px;
   border-left: 9px solid #a18aff;
@@ -20,7 +20,7 @@
   border-bottom-right-radius: 10px;
 }
 
-*::-webkit-scrollbar-thumb {
+.custom-scrollbar::-webkit-scrollbar-thumb {
   background: #ca8bfe;
   border-left: 4px solid #a18aff;
   border-right: 4px solid #a18aff;

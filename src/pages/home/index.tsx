@@ -2,7 +2,6 @@ import {
   DndContext,
   closestCenter,
   DragOverlay,
-  type DragEndEvent,
   type DragOverEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
@@ -15,13 +14,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import CategoriesList from "~/components/CategoriesList";
-import CategoryCard from "~/components/CategoryCard";
 import Header from "~/components/Header";
 import Modal from "~/components/NewAndEditModal";
-import NewCategoryCard from "~/components/NewCategoryCard";
 import SortableItem from "~/components/SortableItem";
 import Spinner from "~/components/Spinner";
 import User from "~/components/User";
+import { useLogger } from "~/hooks/useLogger";
 import { api } from "~/utils/api";
 
 const Home: React.FC = () => {
@@ -33,6 +31,7 @@ const Home: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditModal, setIsEditModal] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo>();
+  const { logs, newLog } = useLogger();
 
   //CATEGORIES
   const {
@@ -61,6 +60,7 @@ const Home: React.FC = () => {
     onSuccess: (data: Todo[]) => {
       setTodos(data);
       setFilteredTodos(data);
+      newLog({ log: "Fetched all todos", type: "update" });
     },
   });
 
@@ -274,7 +274,7 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            <div className="overflow-y-auto">
+            <div className="custom-scrollbar overflow-y-auto">
               {todos.length ? (
                 <DndContext
                   collisionDetection={closestCenter}
@@ -327,6 +327,23 @@ const Home: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+        <div className="box-border flex h-[10%] w-1/4 flex-col items-center rounded-bl-lg rounded-br-lg border-8 border-t-0 border-white bg-lightPurple pb-2">
+          <div className="font-bold uppercase tracking-wider text-white">
+            Logger
+          </div>
+          <div className="mx-auto flex h-[80%] w-full flex-col items-center gap-1 overflow-y-auto">
+            {logs.map((log, i) => (
+              <div
+                key={i}
+                className="mx-auto flex min-h-[30px] w-11/12 items-center gap-2 rounded-lg border-4  bg-white text-xs font-bold uppercase text-darkPurple"
+              >
+                <p>{log.date.toLocaleTimeString()}</p>
+                <p className="">{log.type}</p>
+                <p className="text-xs uppercase">{log.log}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
