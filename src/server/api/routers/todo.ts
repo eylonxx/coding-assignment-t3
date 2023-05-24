@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const taskRouter = createTRPCRouter({
+export const todoRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.todo.findMany();
   }),
@@ -70,5 +70,17 @@ export const taskRouter = createTRPCRouter({
           })
         )
       );
+    }),
+  toggleTodo: protectedProcedure
+    .input(z.object({ id: z.string(), isDone: z.boolean() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.todo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          isDone: input.isDone,
+        },
+      });
     }),
 });
