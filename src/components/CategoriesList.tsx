@@ -8,20 +8,26 @@ interface CategoriesListProps {
   filterTodos: (catId: string) => void;
   categories: Category[];
   addCategory: (category: Category) => void;
+  selectedCategoryId: string;
 }
 
 const CategoriesList = ({
   categories,
   filterTodos,
   addCategory,
+  selectedCategoryId,
 }: CategoriesListProps) => {
   return (
     <>
-      <CategoryCard filterTodos={filterTodos} />
+      <CategoryCard
+        filterTodos={filterTodos}
+        isSelected={selectedCategoryId === "all"}
+      />
       {categories.length ? (
         categories.map((category) => {
           return (
             <CategoryCard
+              isSelected={selectedCategoryId === category.id}
               key={category.id}
               id={category.id}
               color={category.color}

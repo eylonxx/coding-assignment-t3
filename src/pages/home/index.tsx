@@ -31,7 +31,8 @@ const Home: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditModal, setIsEditModal] = useState(false);
-  const [selectedTodo, setSelectedTodo] = useState<Todo>();
+  const [selectedTodoToEdit, setSelectedTodoToEdit] = useState<Todo>();
+  const [selectedCategoryId, setSelectedCategoryId] = useState("all");
   const { logs, newLog } = useLogger();
 
   //CATEGORIES
@@ -178,6 +179,7 @@ const Home: React.FC = () => {
         return [...todoCopy];
       }
     });
+    setSelectedCategoryId(catId);
   };
 
   // DND
@@ -227,7 +229,7 @@ const Home: React.FC = () => {
 
   const handleEditModal = (edit: boolean, todo?: Todo) => {
     if (edit) {
-      setSelectedTodo(todo);
+      setSelectedTodoToEdit(todo);
     }
     setIsEditModal(edit);
     setIsOpen(true);
@@ -248,7 +250,7 @@ const Home: React.FC = () => {
           closeModal={handleCloseModal}
           openModal={handleOpenModal}
           isEdit={isEditModal}
-          todo={selectedTodo}
+          todo={selectedTodoToEdit}
           editTodo={handleEditTodo}
           addTodo={handleAddTodo}
           lastTodoRank={getLastTodoRank()}
@@ -267,6 +269,7 @@ const Home: React.FC = () => {
                 categories={categories}
                 filterTodos={filterTodos}
                 addCategory={handleAddCategory}
+                selectedCategoryId={selectedCategoryId}
               />
             </div>
           </div>
