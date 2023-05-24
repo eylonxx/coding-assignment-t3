@@ -10,6 +10,7 @@ interface CategoriesListProps {
   addCategory: (category: Category) => void;
   selectedCategoryId: string;
   isLoading: boolean;
+  deleteCategory: (id: string) => void;
 }
 
 const CategoriesList = ({
@@ -18,6 +19,7 @@ const CategoriesList = ({
   addCategory,
   selectedCategoryId,
   isLoading,
+  deleteCategory,
 }: CategoriesListProps) => {
   return (
     <>
@@ -33,6 +35,7 @@ const CategoriesList = ({
         categories.map((category) => {
           return (
             <CategoryCard
+              deleteCategory={deleteCategory}
               isSelected={selectedCategoryId === category.id}
               key={category.id}
               id={category.id}

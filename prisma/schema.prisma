@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
 }
 
@@ -49,15 +49,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-      Todo          Todo[]
-  Category      Category[]
+    Todo          Todo[]
+    Category      Category[]
 }
 
 model VerificationToken {
@@ -67,25 +67,26 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
 model Todo {
-  id            String   @id @default(cuid())
-  updatedAt     DateTime @updatedAt
-  createdAt     DateTime @default(now())
-  title         String
-  isDone        Boolean  @default(false)
-  scheduledDate DateTime
-  category      Category @relation(fields: [catId], references: [id])
-  user          User     @relation(fields: [userId], references: [id])
-  userId        String
-  catId         String
-  rank          String
+    id            String   @id @default(cuid())
+    updatedAt     DateTime @updatedAt
+    createdAt     DateTime @default(now())
+    title         String
+    isDone        Boolean  @default(false)
+    scheduledDate DateTime
+    category      Category @relation(fields: [catId], references: [id], onDelete: Cascade)
+    user          User     @relation(fields: [userId], references: [id])
+    userId        String
+    catId         String
+    rank          String
 }
 
 model Category {
-  id     String @id @default(cuid())
-  name   String
-  user   User   @relation(fields: [userId], references: [id])
-  todo   Todo[]
-  color  String
-  userId String
+    id     String @id @default(cuid())
+    name   String
+    user   User   @relation(fields: [userId], references: [id])
+    todo   Todo[]
+    color  String
+    userId String
 }

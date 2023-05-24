@@ -19,4 +19,11 @@ export const categoryRouter = createTRPCRouter({
         },
       });
     }),
+  deleteCategory: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.category.delete({
+        where: { id: input.id },
+      });
+    }),
 });

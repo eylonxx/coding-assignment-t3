@@ -39,6 +39,7 @@ const SortableItem = ({
   const getCategoryColor = (catId: string) => {
     if (categories) {
       const category = categories?.filter((cat) => cat.id === catId);
+      if (!category.length) return "gray";
       return category[0].color;
     } else {
       return "gray";

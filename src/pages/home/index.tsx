@@ -51,8 +51,25 @@ const Home: React.FC = () => {
   const addCategory = api.category.addCategory.useMutation({
     onSuccess: (newCategory: Category) => {
       setCategories([...categories, newCategory]);
+      filterTodos(newCategory.id);
       newLog({
         log: `created new category, "${newCategory.name}"`,
+        type: "create",
+      });
+    },
+  });
+
+  const deleteCategory = api.category.deleteCategory.useMutation({
+    onSuccess: (deletedCategory: Category) => {
+      filterTodos("all");
+      setCategories((currCategories) => {
+        const updatedCategories = currCategories.filter(
+          (category) => category.id !== deletedCategory.id
+        );
+        return [...updatedCategories];
+      });
+      newLog({
+        log: `deleted "${deletedCategory.name}" category and it's todos`,
         type: "create",
       });
     },
@@ -80,6 +97,7 @@ const Home: React.FC = () => {
       setTodos(() => [...todos, newTodo]);
       setFilteredTodos(() => [...todos, newTodo]);
       newLog({ log: `created "${newTodo.title}"`, type: "create" });
+      // filterTodos(newTodo.catId);
     },
   });
 
@@ -139,12 +157,12 @@ const Home: React.FC = () => {
   const deleteTodo = api.todo.deleteTodo.useMutation({
     onSuccess: (deletedTodo: Todo) => {
       setTodos(() => {
-        todos.filter((todo) => todo.id !== deletedTodo.id);
-        return [...todos];
+        const newTodos = todos.filter((todo) => todo.id !== deletedTodo.id);
+        return [...newTodos];
       });
       setFilteredTodos(() => {
-        todos.filter((todo) => todo.id !== deletedTodo.id);
-        return [...todos];
+        const newTodos = todos.filter((todo) => todo.id !== deletedTodo.id);
+        return [...newTodos];
       });
       newLog({ log: `Deleted "${deletedTodo.title}"`, type: "delete" });
     },
@@ -169,6 +187,10 @@ const Home: React.FC = () => {
 
   const handleAddCategory = (category: Category) => {
     addCategory.mutate(category);
+  };
+
+  const handleDeleteCategory = (id: string) => {
+    deleteCategory.mutate({ id });
   };
 
   const handleDragEnd = () => {
@@ -275,7 +297,7 @@ const Home: React.FC = () => {
       ) : null}
       <div className="box-border flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
         <div className="box-border flex h-[90%] w-full min-w-[390px] max-w-[960px] xs:h-2/3 xs:w-2/3 xs:rounded-2xl xs:border-8 xs:border-white">
-          <div className="flex w-[24%] flex-col overflow-y-auto bg-white p-2 pl-[1px]">
+          <div className="flex w-[24%] flex-col overflow-y-auto overflow-x-hidden bg-white p-2 pl-[2px]">
             <User
               image={sessionData?.user?.image as string}
               name={sessionData?.user?.name}
@@ -283,6 +305,7 @@ const Home: React.FC = () => {
             <div className="mx-auto my-3 h-[2px] w-5/6 bg-lightPurple" />
             <div className="flex h-full flex-col items-start justify-start gap-2">
               <CategoriesList
+                deleteCategory={handleDeleteCategory}
                 isLoading={isLoadingCategories}
                 categories={categories}
                 filterTodos={filterTodos}
@@ -306,7 +329,7 @@ const Home: React.FC = () => {
 
             <div className="custom-scrollbar max-h-[90%] overflow-y-auto">
               {isLoadingTodos ? (
-                <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
+                <div className="flex h-full w-full justify-center overflow-hidden pt-10">
                   <Spinner />
                 </div>
               ) : filteredTodos.length ? (
@@ -356,7 +379,7 @@ const Home: React.FC = () => {
                   </DragOverlay>
                 </DndContext>
               ) : (
-                <div className="mt-10 flex h-full w-full justify-center text-2xl uppercase tracking-wider text-white">
+                <div className="flex h-full w-full justify-center pt-10 text-2xl uppercase tracking-wider  text-white">
                   No todos yet...
                 </div>
               )}
