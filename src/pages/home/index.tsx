@@ -274,7 +274,7 @@ const Home: React.FC = () => {
     if (isCategoriesError || isTodosError) {
       void handleError();
     }
-  }, [isCategoriesError, isTodosError]);
+  }, [handleError, isCategoriesError, isTodosError]);
   // ERROR HANDLING */
 
   return (

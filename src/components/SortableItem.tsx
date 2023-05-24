@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Category, Todo } from "@prisma/client";
-import React, { useEffect } from "react";
+import type { Category, Todo } from "@prisma/client";
+import React from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import Checkmark from "./Checkmark";

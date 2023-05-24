@@ -1,4 +1,4 @@
-import { Category } from "@prisma/client";
+import type { Category } from "@prisma/client";
 import React from "react";
 import CategoryCard from "./CategoryCard";
 import NewCategoryCard from "./NewCategoryCard";

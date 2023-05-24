@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Dialog, Transition, Combobox } from "@headlessui/react";
-import { Category, Todo } from "@prisma/client";
-import { Fragment, useEffect, useState } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { Dialog, Transition } from "@headlessui/react";
+import type { Category, Todo } from "@prisma/client";
+import { Fragment, useEffect } from "react";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { LexoRank } from "lexorank";

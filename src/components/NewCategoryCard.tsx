@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Category } from "@prisma/client";
+import type { Category } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import React from "react";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { FiPlusCircle } from "react-icons/fi";
 
 interface NewCategoryCardProps {
@@ -10,7 +10,6 @@ interface NewCategoryCardProps {
 }
 
 const NewCategoryCard = ({ handleAddCategory }: NewCategoryCardProps) => {
-  const [newCategory, setNewCategory] = useState("");
   const { data: session } = useSession();
   const {
     register,
