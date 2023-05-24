@@ -255,7 +255,7 @@ const Home: React.FC = () => {
         />
       ) : null}
       <div className="box-border flex h-screen w-screen flex-col items-center justify-center bg-darkPurple">
-        <div className="box-border flex h-full w-full min-w-[390px] max-w-[960px] xs:h-2/3 xs:w-2/3 xs:rounded-2xl xs:border-8 xs:border-white">
+        <div className="box-border flex h-[90%] w-full min-w-[390px] max-w-[960px] xs:h-2/3 xs:w-2/3 xs:rounded-2xl xs:border-8 xs:border-white">
           <div className="flex w-[24%] flex-col bg-white p-2 pl-[1px]">
             <User
               image={sessionData?.user?.image as string}
@@ -271,21 +271,19 @@ const Home: React.FC = () => {
             </div>
           </div>
           <div className="box-border flex w-[76%] min-w-[280px] max-w-[720px] flex-col bg-lightPurple xs:rounded-lg">
-            <div className="flex min-h-[10%] w-full flex-col gap-1 p-2">
+            <div className="flex min-h-[10%] w-full justify-between  gap-1 p-2">
               <Header />
-              <div className="mx-auto w-11/12">
-                <button
-                  className="box-border w-1/6 min-w-[70px] rounded-xl border-4 border-white bg-lightPurple py-2 text-sm font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-white hover:text-lightPurple"
-                  onClick={() => {
-                    handleEditModal(false);
-                  }}
-                >
-                  new todo
-                </button>
-              </div>
+              <button
+                className=" box-border flex min-w-[70px] items-center justify-center rounded-xl border-4 border-white bg-lightPurple p-2  text-sm font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-white hover:text-lightPurple"
+                onClick={() => {
+                  handleEditModal(false);
+                }}
+              >
+                new todo
+              </button>
             </div>
 
-            <div className="custom-scrollbar overflow-y-auto">
+            <div className="custom-scrollbar max-h-[90%] overflow-y-auto">
               {todos.length ? (
                 <DndContext
                   collisionDetection={closestCenter}
@@ -297,7 +295,7 @@ const Home: React.FC = () => {
                     items={filteredTodos}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="w-full py-4">
+                    <div className="w-full">
                       <div className="mx-auto flex w-11/12 flex-col gap-2 ">
                         <AnimatePresence initial={false}>
                           {filteredTodos
@@ -340,7 +338,7 @@ const Home: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="box-border flex h-[10%] w-full flex-col items-center rounded-bl-lg rounded-br-lg border-8 border-t-0 border-white bg-lightPurple pb-2 xs:w-[60%] sm:w-[60%] md:w-1/3 xl:w-1/4 ">
+        <div className="box-border flex h-[10%] w-full flex-col items-center bg-lightPurple pb-2 xs:w-[60%] xs:rounded-bl-lg xs:rounded-br-lg xs:border-8 xs:border-t-0 xs:border-white sm:w-[60%] md:w-1/3 xl:w-1/4 ">
           <Logger logs={logs} />
         </div>
       </div>
