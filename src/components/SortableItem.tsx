@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Category, Todo } from "@prisma/client";
-import React from "react";
+import React, { useEffect } from "react";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import Checkmark from "./Checkmark";
@@ -36,12 +36,14 @@ const SortableItem = ({
     transition,
   };
 
-  // const getCategoryColor = (catId: string) => {
-  //   if(categories)
-  //   const category = categories?.filter((cat) => cat.id === catId);
-  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //   return category[0]!.color;
-  // };
+  const getCategoryColor = (catId: string) => {
+    if (categories) {
+      const category = categories?.filter((cat) => cat.id === catId);
+      return category[0].color;
+    } else {
+      return "gray";
+    }
+  };
 
   return (
     <div
@@ -59,11 +61,10 @@ const SortableItem = ({
           <div className="flex w-5/6 flex-col justify-between text-lightGray md:flex-row">
             <div className="flex items-center gap-2">
               <div
-                style={{ backgroundColor: "red" }}
-                className="h-4 w-4 rounded-full"
+                style={{ backgroundColor: getCategoryColor(todo.catId) }}
+                className="h-6 w-6 rounded-full border-2 border-lightGray"
               />
               <p className="truncate text-lg font-medium">{todo.title}</p>
-              <p className="text-red-500">{todo.catId}</p>
             </div>
             <p className="truncate text-base">
               {new Date(todo.scheduledDate).toLocaleTimeString()}
