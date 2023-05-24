@@ -139,17 +139,30 @@ export default function Modal({
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="flex h-full w-full flex-col justify-between gap-2">
                       <div className="flex">
-                        <div className="w-1/4">Title</div>
-                        <input
-                          className="w-1/2 rounded-md bg-lightPurple p-1 text-white"
-                          {...register("title", { required: true })}
-                          id="title"
-                        />
-
-                        {errors.title && <span>This field is required</span>}
+                        <div className="w-1/4 ">
+                          <p className="font-semibold tracking-wider text-[#ce93fe]">
+                            Title
+                          </p>
+                        </div>
+                        <div className="relative w-1/2">
+                          <input
+                            className="rounded-md bg-lightPurple p-1 text-white"
+                            {...register("title", { required: true })}
+                            id="title"
+                          />
+                          {errors.title && (
+                            <span className="pointer-events-none absolute left-2 top-[5px] text-sm uppercase tracking-wider text-white">
+                              *This is required
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <div className="flex">
-                        <div className="w-1/4">When?</div>
+                        <div className="w-1/4 ">
+                          <p className="font-semibold tracking-wider text-[#ce93fe]">
+                            When
+                          </p>
+                        </div>
                         <div>
                           <Controller
                             control={control}
@@ -173,7 +186,9 @@ export default function Modal({
                           />
                         </div>
                       </div>
-                      <label className="text-[#ce93fe]">Category</label>
+                      <label className="font-semibold text-[#ce93fe]">
+                        Category
+                      </label>
                       <select
                         {...register("catId")}
                         id="catId"
