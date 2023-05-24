@@ -9,6 +9,7 @@ interface CategoriesListProps {
   categories: Category[];
   addCategory: (category: Category) => void;
   selectedCategoryId: string;
+  isLoading: boolean;
 }
 
 const CategoriesList = ({
@@ -16,6 +17,7 @@ const CategoriesList = ({
   filterTodos,
   addCategory,
   selectedCategoryId,
+  isLoading,
 }: CategoriesListProps) => {
   return (
     <>
@@ -23,7 +25,11 @@ const CategoriesList = ({
         filterTodos={filterTodos}
         isSelected={selectedCategoryId === "all"}
       />
-      {categories.length ? (
+      {isLoading ? (
+        <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
+          <Spinner />
+        </div>
+      ) : categories.length ? (
         categories.map((category) => {
           return (
             <CategoryCard
@@ -37,8 +43,8 @@ const CategoriesList = ({
           );
         })
       ) : (
-        <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
-          <Spinner />
+        <div className="mt-10 flex h-full w-full justify-center text-2xl uppercase tracking-wider text-white">
+          No other categories yet...
         </div>
       )}
       <NewCategoryCard handleAddCategory={addCategory} />

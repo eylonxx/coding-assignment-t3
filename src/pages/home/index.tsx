@@ -245,10 +245,13 @@ const Home: React.FC = () => {
     <>
       {todos.length ? (
         <Modal
+          isLoadingUpdate={updateTodo.isLoading}
+          isLoadingAdd={addTodo.isLoading}
+          isUpdateSuccess={updateTodo.isSuccess}
+          isAddSuccess={addTodo.isSuccess}
           categories={categories}
           isOpen={isOpen}
           closeModal={handleCloseModal}
-          openModal={handleOpenModal}
           isEdit={isEditModal}
           todo={selectedTodoToEdit}
           editTodo={handleEditTodo}
@@ -266,6 +269,7 @@ const Home: React.FC = () => {
             <div className="mx-auto my-3 h-[2px] w-5/6 bg-lightPurple" />
             <div className="flex h-full flex-col items-start justify-start gap-2">
               <CategoriesList
+                isLoading={isLoadingCategories}
                 categories={categories}
                 filterTodos={filterTodos}
                 addCategory={handleAddCategory}
@@ -287,7 +291,11 @@ const Home: React.FC = () => {
             </div>
 
             <div className="custom-scrollbar max-h-[90%] overflow-y-auto">
-              {todos.length ? (
+              {isLoadingTodos ? (
+                <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
+                  <Spinner />
+                </div>
+              ) : filteredTodos.length ? (
                 <DndContext
                   collisionDetection={closestCenter}
                   onDragOver={handleDragOver}
@@ -334,8 +342,8 @@ const Home: React.FC = () => {
                   </DragOverlay>
                 </DndContext>
               ) : (
-                <div className="mt-10 flex h-full w-full justify-center overflow-hidden">
-                  <Spinner />
+                <div className="mt-10 flex h-full w-full justify-center text-2xl uppercase tracking-wider text-white">
+                  No todos yet...
                 </div>
               )}
             </div>

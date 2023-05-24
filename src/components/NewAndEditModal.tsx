@@ -10,7 +10,6 @@ import { useSession } from "next-auth/react";
 
 interface ModalProps {
   closeModal: () => void;
-  openModal: () => void;
   isOpen: boolean;
   isEdit: boolean;
   todo: Todo | undefined;
@@ -18,17 +17,24 @@ interface ModalProps {
   editTodo: (todo: Todo) => void;
   addTodo: (todo: Todo) => void;
   lastTodoRank: string;
+  isLoadingUpdate: boolean;
+  isLoadingAdd: boolean;
+  isUpdateSuccess: boolean;
+  isAddSuccess: boolean;
 }
 export default function Modal({
   isOpen,
   closeModal,
-  openModal,
   isEdit,
   todo,
   categories,
   editTodo,
   addTodo,
   lastTodoRank,
+  isLoadingUpdate,
+  isLoadingAdd,
+  isUpdateSuccess,
+  isAddSuccess,
 }: ModalProps) {
   const { data: session } = useSession();
   const {
@@ -52,7 +58,6 @@ export default function Modal({
       editTodo(newTodo);
       closeModal();
     } else {
-      //rank: LexoRank.parse(lastTodoRank).genNext().toString()
       const newTodo = {
         //New todo
         ...data,
@@ -62,9 +67,14 @@ export default function Modal({
         rank: LexoRank.parse(lastTodoRank).genNext().toString(),
       };
       addTodo(newTodo);
-      closeModal();
     }
   };
+
+  useEffect(() => {
+    if (isUpdateSuccess || isAddSuccess) {
+      closeModal();
+    }
+  }, [isUpdateSuccess, isAddSuccess]);
 
   useEffect(() => {
     if (isEdit && todo) {
@@ -175,10 +185,12 @@ export default function Modal({
                           </option>
                         ))}
                       </select>
-                      {/* <input {...register("", { required: true })} /> */}
                       {/* errors will return when field validation fails  */}
-                      <button className="mt-10 rounded-lg bg-lightPurple p-2 text-2xl text-white outline-none">
-                        Save
+                      <button
+                        disabled={isLoadingAdd || isLoadingUpdate}
+                        className="mt-10 rounded-lg bg-lightPurple p-2 text-2xl text-white outline-none"
+                      >
+                        {isLoadingAdd || isLoadingUpdate ? "Saving..." : "Save"}
                       </button>
                     </div>
                   </form>
