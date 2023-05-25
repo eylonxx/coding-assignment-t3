@@ -81,6 +81,7 @@ export default function Modal({
       setValue("title", todo.title);
       setValue("isDone", todo.isDone);
       setValue("scheduledDate", new Date(todo.scheduledDate));
+      setValue("catId", todo.catId);
     }
   }, [todo, isEdit]);
 
