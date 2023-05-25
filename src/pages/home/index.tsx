@@ -183,6 +183,7 @@ const Home: React.FC = () => {
   });
   //MUTATIONS */
 
+  //UTILS
   const handleEditTodo = (todo: Todo) => {
     updateTodo.mutate(todo);
   };
@@ -207,10 +208,6 @@ const Home: React.FC = () => {
     deleteCategory.mutate({ id });
   };
 
-  const handleDragEnd = () => {
-    updateRanks.mutate([...todos]);
-  };
-
   const filterTodos = (catId: string) => {
     setFilteredTodos(() => {
       if (catId === "all") {
@@ -222,10 +219,12 @@ const Home: React.FC = () => {
     });
     setSelectedCategoryId(catId);
   };
+  //UTILS */
   //TODOS */
 
   // DND
   const handleDragOver = (e: DragOverEvent) => {
+    //Swap ranks between neighboring todos
     const { active, over } = e;
     const overId = over?.id;
     if (overId == null) return;
@@ -257,6 +256,12 @@ const Home: React.FC = () => {
       setActiveTodo(activeTodo);
     }
   }
+
+  const handleDragEnd = () => {
+    //"Batch update" all ranks
+    updateRanks.mutate([...todos]);
+  };
+
   //DND */
 
   // MODAL
@@ -286,7 +291,11 @@ const Home: React.FC = () => {
 
   // ERROR HANDLING
   const handleError = useCallback(async () => {
-    await router.push("https://coding-assignment-t3.vercel.app/error");
+    if (process.env.NODE_ENV === "development") {
+      await router.push("http://localhost:3000/error");
+    } else {
+      await router.push("https://coding-assignment-t3.vercel.app/error");
+    }
   }, []);
 
   useEffect(() => {
